@@ -1,19 +1,33 @@
-%  Binary skeleton image of restored sarcomeres after ROI based
-%  removal of non-sarcomers
+% Performs the detection of the sarcomeres in an image.
 %
-%  *.sarcDetect.Settings.mat file containing sarcomere alignment
-%  data and parameters needed to run sarcDetectMulti on a folder
-%  full of image files6gineering and Applied Sciences
-%  Havard University, Cambridge, MA 02138
+% The outputs are:
+%  - Binary skeleton image of restored sarcomeres
+%  - *.sarcDetect.Settings.mat file containing sarcomere alignment data and
+%  parameters needed to run sarcDetectMulti
 %
-% Last updated Feb 2009 by Adam W. Feinberg
+% Original version by Adam W. Feinberg, Feb 2009
+% School of Egineering and Applied Sciences
+% Havard University, Cambridge, MA 02138
+%
+% Last updated Sept 2014 by Davi M. Lyra Leite
+% Viterbi School of Engineering
+% University of Southern California, Los Angeles, CA 90089
+
+
+%% ========================================================================
+% Clearing workspace
+clear all
+close all
+clc
+
+% Changing the path to add the finger print detection toolbox
+addpath(genpath('Finger Print Detection/'));
 
 
 %% ========================================================================
 % User inputs file:
-[file,path]=uigetfile({'*.TIF';'*.tif';'*.bmp';'*.jpg';'*.*'},...
-    'Select Image File...');%,...
-%'/Users/davileite/Desktop/LSE Data/Processed Images');
+[file,path] = uigetfile({'*.TIF';'*.tif';'*.bmp';'*.jpg';'*.*'},...
+    'Select Image File...');
 filename = [path file];
 disp(filename)
 disp(' ')
@@ -27,55 +41,18 @@ disp(['width = ',num2str(width)])
 disp(['height = ',num2str(height)])
 disp(' ')
 
-% Enter pixel to micrometer converesion factor to define appropriate
-% sarcomere spacing
-disp('Select your microscope type: ')
-mictype = input('1 - Nikon\n2- Zeiss:\n');
-disp(' ')
 
-% Obtaining the calibration factor according to the microscope type and the
-% objective magnification
-disp('Select your objective:')
-switch mictype    
-    % Nikon
-    case 1
-        magnification = input('1 - 10x\n2 - 20x\n3 - 60x:\n');
-        if magnification == 1
-            pix2um = 9.3;
-        elseif magnification == 2
-           pix2um = 3.0769;
-        elseif magnification == 3
-            pix2um = 9.2308;
-        end
-        
-	% Zeiss
-    case 2
-        magnification = input('1 - 10x\n2 - 20x\n3 - 63x:\n');
-        if magnification == 1
-            pix2um = 3.085;
-        elseif magnification == 2
-           pix2um = 6.22;
-        elseif magnification == 3
-            pix2um = 9.8;
-        end
-end
-
-% convert 2 um sarcomere spacing into pixels
-SarcSpacing = 2*pix2um;
-
-% minimum length of sarcomere spacing
-MinSarcSpacing = round(0.5*SarcSpacing);
-
-% maximum length of sarcomere spacing
-MaxSarcSpacing = round(1.5*SarcSpacing);
-blksze = MaxSarcSpacing;
+%% ========================================================================
+% Microscope selection routine to define appropriate sarcomere spacing
+micselection;
 
 
 %% ========================================================================
-% Identify ridge-like regions and normalise image
+% Identify ridge-like regions and normalize image
 index = 0;
 while index < 1;
-    % Threshold of standard deviation to decide if a block is a ridge region
+    % Threshold of standard deviation to decide if a block is a ridge 
+    % region
     thresh = input('\nEnter Threshold (0.01 - 0.20):\n');
     disp('Normalizing Image and Creating Mask')
     disp(' ')
@@ -85,13 +62,14 @@ while index < 1;
     
     % Determine if normalization and mask look good, click on image to
     % accept or press any key to enter new values
-    w = input('\nAccept Threshold (yes, no):\n','s');
+    w = input('\nAccept Threshold (yes, no): ','s');
     disp(' ')
-    if w == 'y' || w == 'Y' || strcmp(w,'yes') || strcmp(w,'Yes')
+    if strcmp(w,'y') || strcmp(w,'Y') || strcmp(w,'yes') || strcmp(w,'Yes')
         disp('Image threshold accepted')
         index = 1;
-    else
+    else %if w == 'n' || w == 'N' || strcmp(w,'no') || strcmp(w,'No')
         disp('Re-analyze imaging...')
+        index = 0;
     end
 end
 
@@ -140,7 +118,7 @@ while index < 1;
     show(binim_skel,7);
     
     b = input('Accept Sarcomere Detection (yes, no): ','s');
-    if b == 'y' || b == 'Y' || strcmp(b,'yes') || strcmp(b,'Yes')
+    if strcmp(b,'y') || strcmp(b,'Y') || strcmp(b,'yes') || strcmp(b,'Yes')
         disp('Image accepted' )
         index = 1;
     else
@@ -168,13 +146,16 @@ while index < 1;
     BW = roipoly(binim_skel);
     BW2 = ~BW;
     binim_skel = binim_skel.*BW2;
+    
     % Use mask to remove false sarcomeres from binary skeleton
     show(binim_skel)
     b = input('Select another ROI to exclude? (yes, no): ','s');
-    if b == 'y' || b == 'Y' || strcmp(b,'yes') || strcmp(b,'Yes')
-        disp('Image accepted' )
-    else
+    if strcmp(b,'y') || strcmp(b,'Y') || strcmp(b,'yes') || strcmp(b,'Yes')
         disp('Select another ROI...')
+        disp(' ')
+    else
+        disp('Image accepted' )
+        disp(' ')
         index = 1;
     end
 end
@@ -189,6 +170,7 @@ orientim_perp = orientim_perp.*binim_skel;
 
 % Convert 2D-array to 1D vector
 orientation = orientim_perp(:);
+
 % Keep non-zero values only
 nonzero_orientation = orientation((orientation)~=0) - 2*pi;
 
@@ -200,7 +182,7 @@ y_vector = sum(sin(nonzero_orientation));
 disp(y_vector); disp(' ')
 
 % Convert radians to degrees
-nonzero_orientation_angles = rad2ang(nonzero_orientation);
+nonzero_orientation_angles = rad2deg(nonzero_orientation);
 
 % Analyze orientational data
 Mean = mean(nonzero_orientation_angles);
@@ -220,21 +202,24 @@ n = n / sum( n*dx ); % normalize histogram to have area of 1
 Mode = xout(I);
 disp(Mode); disp(' ')
 
-% Plot histogram of raw orientation
-% plot normalized histogram
+% Plot normalized histogram of raw orientation
 figure, bar(xout,n,'hist')
 
-% make sure that the axis is squeezed to it's limits
+% Making sure that the axis is squeezed to its limits
 xlim( [xout(1)-dx/2,xout(end)+dx/2] );
 title('Histogram of Sarcomere Orientation Angles')
 xlabel('Degrees')
 ylabel('Normalized Occurence')
 
+
+%% ========================================================================
 % Total number of sarcomere positive pixels in the skeleton image
 % Sarcomere density = total/(image area)
 TotalSarc = length(nonzero_orientation_angles);
 disp(TotalSarc); disp(' ')
 
+
+%% ========================================================================
 % save filtered image of sarcomere skeleton
 type = '.sarcomere.CLEAN.tif';
 filename2 = [filename type];
