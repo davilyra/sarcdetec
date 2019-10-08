@@ -22,7 +22,7 @@ fname = filename(1:end-29);
 ii2 = 0;
 for ii = str2double(filename(end-28)): str2double(filename(end-28)) + n - 1
     ii2 = ii2 + 1;
-    load([fname,num2str(ii),'.tif.sarcDetect.Settings.mat'])
+    load([fname,num2str(ii),'_tif_sarcDetect_Settings.mat'])
     images{ii2} = rad2deg(nonzero_orientation);
 
     subplot(ceil(n/3),3,ii2)
