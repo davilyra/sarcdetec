@@ -100,7 +100,7 @@
            
            % save filtered image of sarcomere skeleton before manual removal of
            % non-sarcomeres
-           type = '.sarcomere.FULL.tif';
+           type = '_sarcomere_FULL.tif';
            filename3 = [filename2 type];
            imwrite(binim_skel,filename3,'Compression','none');
 
@@ -153,17 +153,17 @@
            Total = length(nonzero_orientation_angles)
 
            % save filtered image of sarcomere skeleton
-           type = '.sarcomere.CLEAN.tif';
+           type = '_sarcomere_CLEAN.tif';
            filename3 = [filename2 type];
            imwrite(binim_skel,filename3,'Compression','none');
            
            % save filtered image of sarcomere skeleton
-           type = '.sarcomere.CLEAN.tif';
+           type = '_sarcomere_CLEAN.tif';
            filename3 = [filename2 type];
            imwrite(binim_skel,filename3,'Compression','none');
 
            % save orientation angles
-           ext_settings = '.sarcOrientation.mat';
+           ext_settings = '_sarcOrientation.mat';
            filename4 = [filename2 ext_settings];
            save(filename4,'orientim_perp','nonzero_orientation','nonzero_orientation_angles','Mode','Total'); 
            
@@ -188,7 +188,7 @@
    Total = length(All_angles)/NumFiles
    
    % save SUM orientation angles
-   ext_settings = '.sarcOrientationALL.mat';
+   ext_settings = '_sarcOrientationALL.mat';
    filename5 = [filename2 ext_settings];
    save(filename5,'All_angles','Mode','Total'); 
     
