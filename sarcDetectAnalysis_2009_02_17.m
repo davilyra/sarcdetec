@@ -151,7 +151,7 @@
    TotalSarcY = sarcY/Total*100
    
    % save SUM orientation angles
-   ext_settings = '.ALL.mat';
+   ext_settings = '_ALL.mat';
    filename5 = [filename2 ext_settings];
    save(filename5,'All_rad','Mode','Total','TotalAll','ModeAll'); 
     
