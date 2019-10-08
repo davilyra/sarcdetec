@@ -73,7 +73,7 @@
        show(imClean)
        
        % Save images of sarcomere area
-       type = '.AREA.tif';
+       type = '_AREA.tif';
        filename5 = [filename2 type];
        filename6 = [filename4 type];
        imwrite(imClean,filename5,'Compression','none');
@@ -114,7 +114,7 @@
    StdPercentAreaFull = std(sarcAreaFullPercent)   
 
    % save data as .MAT file
-   ext_settings = '.AREA_DATA.mat';
+   ext_settings = '_AREA_DATA.mat';
    filename3 = [filename2 ext_settings];
    save(filename3,'AreaTotal_um','sarcArea','sarcAreaClean','sarcAreaCleanPercent','sarcAreaFull','sarcAreaFullPercent'); 
    
