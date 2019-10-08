@@ -9,7 +9,7 @@
 % School of Egineering and Applied Sciences
 % Havard University, Cambridge, MA 02138
 %
-% Last updated Sept 2014 by Davi M. Lyra Leite
+% Last updated October 2019 by Davi M. Lyra Leite
 % Viterbi School of Engineering
 % University of Southern California, Los Angeles, CA 90089
 
