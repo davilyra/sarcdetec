@@ -130,7 +130,7 @@ end
 
 % save filtered image of sarcomere skeleton before manual removal of
 % non-sarcomeres
-type = '.sarcomere.FULL.tif';
+type = '_sarcomere_FULL.tif';
 filename2 = [filename type];
 imwrite(binim_skel,filename2,'Compression','none');
 
@@ -221,12 +221,12 @@ disp(TotalSarc); disp(' ')
 
 %% ========================================================================
 % save filtered image of sarcomere skeleton
-type = '.sarcomere.CLEAN.tif';
+type = '_sarcomere_CLEAN.tif';
 filename2 = [filename type];
 imwrite(binim_skel,filename2,'Compression','none');
 
 % save settings file for sarcDetectMulti
-ext_settings = '.sarcDetect.Settings.mat';
+ext_settings = '_sarcDetect_Settings.mat';
 filename3 = [filename ext_settings];
 save(filename3,'blksze','thresh','MinSarcSpacing','MaxSarcSpacing',...
     'kx','ky','pix2um','width','height','orientim','orientim_perp',...
