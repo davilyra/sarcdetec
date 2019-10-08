@@ -103,7 +103,7 @@ directionAngle = directionAngle_defualt + 180*(floor(min(angles)/pi()));
 direction_error = directionAngle - (180/pi())*mean(angles);
 
 % save orientational order parameters, director, and the direction Angle
-ext_settings = '.OrientationOrderParameter.mat';
+ext_settings = '_OrientationOrderParameter.mat';
 filename2 = [filename ext_settings];
 save(filename2,'Orientation_order_parameter','director','directionAngle');
 
